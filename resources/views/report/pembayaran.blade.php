@@ -28,6 +28,8 @@
 			</form>
 		</div>
 	</div>
+
+    <div id="divPreview"></div>
 @stop
 
 @section('js')
@@ -79,6 +81,78 @@
             $('.daterange-buttons').daterangepicker({
                 applyClass: 'btn-success',
                 cancelClass: 'btn-danger'
+            });
+
+            $(document).on("submit","#form",function(e){
+                var data = new FormData(this);
+                //var hasil = CKEDITOR.instances.hasil.getData();
+                if($("#form")[0].checkValidity()) {
+                    //updateAllMessageForms();
+                    e.preventDefault();
+                    $.ajax({
+                        url         : "{{URL::to('report/preview-pembayaran')}}",
+                        type        : 'post',
+                        data        : data,
+                        dataType  : 'JSON',
+                        contentType   : false,
+                        cache       : false,
+                        processData   : false,
+                        beforeSend  : function (){
+                            $('#divPreview').html('<div class="alert alert-info"><i class="fa fa-spinner fa-2x fa-spin"></i>&nbsp;Please wait for a few minutes</div>');
+                        },
+                        success : function (result) {
+                            var el="";
+                            el+="<div class='panel panel-default'>"+
+                                '<div class="panel-heading">'+
+                                    '<h6 class="panel-title">Preview</h6>'+
+                                    '<div class="heading-elements">'+
+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="panel-body">'+
+                                    '<table class="table table-striped>"'+
+                                        '<thead>'+
+                                            '<tr>'+
+                                                '<td>No.</td>'+
+                                                '<td>ID Pembayaran</td>'+
+                                                '<td>Tgl Pembayaran</td>'+
+                                                '<td>ID. Pemeriksaan / No.BA</td>'+
+                                                '<td>Tgl. Pemeriksaan</td>'+
+                                                '<td>Saving Kwh</td>'+
+                                                '<td>ID Pelanggan / Nama Pelanggan</td>'+
+                                                '<td>Biaya Beban</td>'+
+                                                '<td>Rp. Bayar</td>'+
+                                            '</tr>'+
+                                        '</thead>'+
+                                        '<tbody>';
+                                            var no=0;
+                                            $.each(result,function(a,b){
+                                                no++;
+                                                el+='<tr>'+
+                                                    '<td>'+no+'</td>'+
+                                                    '<td>'+b.id_pembayaran+'</td>'+
+                                                    '<td>'+b.tgl_pembayaran+'</td>'+
+                                                    '<td>'+b.id_pemeriksaan+' / '+b.pemeriksaan.no_ba+'</td>'+
+                                                    '<td>'+b.pemeriksaan.tgl_pemeriksaan+'</td>'+
+                                                    '<td>'+b.pemeriksaan.saving_kwh+'</td>'+
+                                                    '<td>'+b.pemeriksaan.pelanggan.id_pelanggan+' / '+b.pemeriksaan.pelanggan.nama+'</td>'+
+                                                    '<td>'+b.biaya_beban+'</td>'+
+                                                    '<td>'+b.rp_bayar+'</td>'+
+                                                '</tr>';
+                                            })
+
+                                        el+='</tbody>'+
+                                    '</table>'+
+                                '</div>'+
+                            '</div>';
+
+                            $("#divPreview").empty().html(el);
+                        },
+                        error   :function() {  
+                            $('#pesan').html('<div class="alert alert-danger">Your request not Sent...</div>');
+                        }
+                    });
+                }else console.log("invalid form");
             });
 
             

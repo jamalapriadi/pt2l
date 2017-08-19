@@ -10,7 +10,7 @@
 				<div class="form-group">
                     <label for="" class="col-lg-2 control-label">Periode</label>
                     <div class="col-lg-8">
-                        <input type="text" name="periode" class="form-control daterange-buttons"> 
+                        <input type="text" name="periode" id="periode" class="form-control daterange-buttons"> 
                     </div>
                 </div>
 
@@ -28,6 +28,8 @@
 			</form>
 		</div>
 	</div>
+
+    <div id="divPreview"></div>
 @stop
 
 @section('js')
@@ -79,6 +81,74 @@
             $('.daterange-buttons').daterangepicker({
                 applyClass: 'btn-success',
                 cancelClass: 'btn-danger'
+            });
+
+            $(document).on("submit","#form",function(e){
+                var data = new FormData(this);
+                //var hasil = CKEDITOR.instances.hasil.getData();
+                if($("#form")[0].checkValidity()) {
+                    //updateAllMessageForms();
+                    e.preventDefault();
+                    $.ajax({
+                        url         : "{{URL::to('report/preview-pemeriksaan')}}",
+                        type        : 'post',
+                        data        : data,
+                        dataType  : 'JSON',
+                        contentType   : false,
+                        cache       : false,
+                        processData   : false,
+                        beforeSend  : function (){
+                            $('#divPreview').html('<div class="alert alert-info"><i class="fa fa-spinner fa-2x fa-spin"></i>&nbsp;Please wait for a few minutes</div>');
+                        },
+                        success : function (result) {
+                            var el="";
+                            el+="<div class='panel panel-default'>"+
+                                '<div class="panel-heading">'+
+                                    '<h6 class="panel-title">Preview</h6>'+
+                                    '<div class="heading-elements">'+
+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="panel-body">'+
+                                    '<table class="table table-striped>"'+
+                                        '<thead>'+
+                                            '<tr>'+
+                                                '<td>No.</td>'+
+                                                '<td>ID Pemeriksaan</td>'+
+                                                '<td>Tgl Pemeriksaan</td>'+
+                                                '<td>ID / Nama Pelanggan</td>'+
+                                                '<td>Alamat</td>'+
+                                                '<td>No. BA</td>'+
+                                                '<td>Saving Kwh</td>'+
+                                            '</tr>'+
+                                        '</thead>'+
+                                        '<tbody>';
+                                            var no=0;
+                                            $.each(result,function(a,b){
+                                                no++;
+                                                el+='<tr>'+
+                                                    '<td>'+no+'</td>'+
+                                                    '<td>'+b.no_agenda+'</td>'+
+                                                    '<td>'+b.tgl_pemeriksaan+'</td>'+
+                                                    '<td>'+b.id_pelanggan+' / '+b.pelanggan.nama+'</td>'+
+                                                    '<td>'+b.pelanggan.alamat+'</td>'+
+                                                    '<td>'+b.no_ba+'</td>'+
+                                                    '<td>'+b.saving_kwh+'</td>'+
+                                                '</tr>';
+                                            })
+
+                                        el+='</tbody>'+
+                                    '</table>'+
+                                '</div>'+
+                            '</div>';
+
+                            $("#divPreview").empty().html(el);
+                        },
+                        error   :function() {  
+                            $('#pesan').html('<div class="alert alert-danger">Your request not Sent...</div>');
+                        }
+                    });
+                }else console.log("invalid form");
             });
 
             

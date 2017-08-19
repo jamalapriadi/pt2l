@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>PL2T ADMINISTRATOR</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -74,9 +74,11 @@
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-right">
+                                <!--
                                 <li><a href="{{URL::to('home/profile')}}"><i class="icon-user-plus"></i> My profile</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>
+                                -->
                                 <li>
                                     <a href="{{ route('logout') }}"
                                         onclick="event.preventDefault();

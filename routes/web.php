@@ -35,11 +35,16 @@ Route::group(['middleware'=>'auth'],function(){
     Route::resource('pelanggaran','PelanggaranController');
     Route::get('daya-by-tarif/{id}','TarifController@daya');
     Route::get('get-id','PemeriksaanController@get_id_by_type');
+    Route::get('top-pelanggan','HomeController@top_pelanggan');
 
     Route::group(['prefix'=>'report'],function(){
         Route::get('hasil-pemeriksaan','ReportController@hasil_pemeriksaan');
         Route::get('pembayaran','ReportController@pembayaran');
         Route::get('belum-terbayar','ReportController@belum_terbayar');
         Route::get('penyambungan-kembali','ReportController@penyambungan_kembali');
+        Route::post('preview-pemeriksaan','ReportController@preview_pemeriksaan');
+        Route::post('preview-pembayaran','ReportController@preview_pembayaran');
+        Route::post('preview-belum-bayar','ReportController@preview_belum_bayar');
+        Route::post('preview-penyambungan-kembali','ReportController@preview_penyambungan_kembali');
     });
 });

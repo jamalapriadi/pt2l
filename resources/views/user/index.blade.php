@@ -7,9 +7,11 @@
         </div>
 
         <div class="panel-body">
+            <!--
             <a href="#" class="btn btn-primary" id="tambah">
                 <i class="icon-add"></i> Add New User
             </a>
+            -->
 
             <table class="table table-striped" id="data"></table>
         </div>
